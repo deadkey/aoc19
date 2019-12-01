@@ -10,10 +10,10 @@ def p2(v, log=False):
     return 0
 
 def get_day():
-    return 1
+    return date.today().day
 
 def get_year():
-    return 2019
+    return date.today().year
 
 if __name__ == '__main__':
     run(get_year(), get_day(), p1, p2, D=True)
