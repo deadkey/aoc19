@@ -17,7 +17,7 @@ def get_target(YEAR, DAY, fake=False):
         return time.time() + 10
     return (target - epoch).total_seconds()
 
-def run(YEAR, DAY, p1_fn, p2_fn, force=False, fake_time=False, D=False, run_samples=True):
+def run(YEAR, DAY, p1_fn, p2_fn, force=False, fake_time=False, D=False, run_samples=True, samples_only = False):
     if run_samples:
         for fname, data in get_samples(YEAR, DAY):
             print(fname)
@@ -31,11 +31,15 @@ def run(YEAR, DAY, p1_fn, p2_fn, force=False, fake_time=False, D=False, run_samp
     if left > 0:
         log.debug("Target: {} Now: {}".format(target, now))
         log.debug("Seconds Left: {}".format(left))
+    if samples_only:
+        return
     v = fetch(YEAR, DAY, log, wait_until=target, force=force)
     if D:
         print(v)
     print('part_1: {}'.format(p1_fn(v)))
     print('part_2: {}'.format(p2_fn(v)))
+
+
 
 
 
