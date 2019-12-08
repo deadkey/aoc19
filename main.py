@@ -19,7 +19,7 @@ def get_target(YEAR, DAY, fake=False):
 
 def run(YEAR, DAY, p1_fn, p2_fn, force=False, fake_time=False, D=False, run_samples=True, samples_only = False):
     if run_samples:
-        for fname, data in get_samples(YEAR, DAY):
+        for fname, data in sorted(get_samples(YEAR, DAY)):
             print(fname)
             print(p1_fn(data))
             print(p2_fn(data))
