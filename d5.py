@@ -4,333 +4,114 @@ sys.path.extend(['..', '.'])
 from collections import *
 from main import run
 
+from queue import Queue
+
+## RUN WITH PYTHON 3!!!!
+
 def p1(v, log=False):
-    return 0
-    '''
-    output = -1
-    lines = v.strip().split('\n')
-    cmd = []
-    for line in lines:
-        no = line.strip().split(',')
-        
-        for n in no:
-            if len(n) > 0:
-                cmd.append(int(n))
+    cmd= get_cmd(v)
+    ins = Queue()
+    ins.put(1)
+    return program(cmd, ins)
+
+def pp(*v):
+    if PP:
+        print(v) 
+
+def get(i, p, v, cmd):
+    if p[i] == 0:
+        return cmd[v[i]]
     
-    i = 0
-    while True:
-        opcode = str(cmd[i])[::-1] + '0' * 6
+    return v[i]
 
-        code = int(opcode[:2][::-1]) # note reversed!
-        p1 = int(opcode[2])
-        p2 = int(opcode[3])
-        p3 = int(opcode[4])
-        p4 = int(opcode[5])
-        
-        v1, v2, v3, v4 = 0, 0, 0, 0
-        if code == 1:
-            v1, v2, v3 = int(cmd[i+1]), int(cmd[i+2]), int(cmd[i+3])     
+def program(cmd, ins):
+    output = []
 
-        if code == 2:
-            v1, v2, v3 = int(cmd[i+1]), int(cmd[i+2]), int(cmd[i+3])
-
-        if code == 3:
-            v1 = int(cmd[i+1])
-        if code == 4:
-            v1 = int(cmd[i+1])
-
-        if code == 5:
-            v1 = int(cmd[i+1])
-            
-        if code == 6:
-            v1 = int(cmd[i+1])
-
-        if code == 7:
-            v1 = int(cmd[i+1])
-
-        if code == 8:
-            v1 = int(cmd[i+1])
-            
-
-        if code == 1:
-            a = v1
-            if p1 == 0:
-                a = cmd[v1]
-            b = v2
-            if p2 == 0:
-                b = cmd[v2]
-            
-            pos = v3
-            
-            cmd[pos] = a + b
-            i += 4
-            #print('add', i, cmd, a+b)
-        elif code == 2:
-            a = v1
-            if p1 == 0:
-                a = cmd[v1]
-            b = v2
-            if p2 == 0:
-                b = cmd[v2]
-            pos = v3
-            cmd[pos] = a * b
-
-            #print('mul', i, cmd, a*b)
-            i += 4
-        elif code == 3:
-            a = 1
-            pos = v1
-
-            cmd[pos] = 1
-            i += 2
-
-            #print('ins', i, cmd, pos)
-
-        elif code == 4:
-            pos = v1
-            output = cmd[pos]
-            i += 2
-
-            print('out', output)
-        elif code == 5:
-            a = v1
-            if p1 == 0:
-                a = cmd[v1]
-            b = v2
-            if p2 == 0:
-                b = cmd[v2]
-            
-            pos = b
-            if a != 0:
-                i = b
-            else:
-                i += 2
-
-        elif code == 6:
-            a = v1
-            if p1 == 0:
-                a = cmd[v1]
-            b = v2
-            if p2 == 0:
-                b = cmd[v2]
-            
-            pos = b
-            if a == 0:
-                i = b
-            else:
-                i += 2
-            
-        elif code == 7:
-            a = v1
-            if p1 == 0:
-                a = cmd[v1]
-            b = v2
-            if p2 == 0:
-                b = cmd[v2]
-            
-            pos = v3
-
-            if a < b:
-                cmd[pos] = 1
-            else:
-                cmd[pos] = 0
-            i += 4
-        
-        elif code == 8:
-            a = v1
-            if p1 == 0:
-                a = cmd[v1]
-            b = v2
-            if p2 == 0:
-                b = cmd[v2]
-            
-            pos = v3
-
-            if a == b:
-                cmd[pos] = 1
-            else:
-                cmd[pos] = 0
-            i += 4
-            
-        elif code == 99:
-            return output
-
-        else:
-            print('something went wrong', code, i)
-            exit()
-    '''
-        
-    return output
-
-def p2(v, log=False):
-    output = -1
-    myin = 5
-    lines = v.strip().split('\n')
-    cmd = []
-    for line in lines:
-        no = line.strip().split(',')
-        for n in no:
-
-            if len(n) > 0:
-                cmd.append(int(n))
-    
     i = 0
     while True:
         opcode = str(cmd[i])[::-1] + '0' * 6
         code = int(opcode[:2][::-1]) # note reversed!
-        p1 = int(opcode[2])
-        p2 = int(opcode[3])
-        p3 = int(opcode[4])
-        p4 = int(opcode[5])
+        p = [int(opcode[2]), int(opcode[3]), int(opcode[4]), int(opcode[5])]
+        N = len(cmd)
+        v = [cmd[(i+1)%N], cmd[(i+2)%N], cmd[(i+3)%N], cmd[(i+4)%N]]
         
-        v1, v2, v3, v4 = 0, 0, 0, 0
+        a = get(0, p, v, cmd)
+        b = get(1, p, v, cmd)
+
+        pos = v[2]
+        #ADD
         if code == 1:
-            v1, v2, v3 = int(cmd[i+1]), int(cmd[i+2]), int(cmd[i+3])     
-
-        if code == 2:
-            v1, v2, v3 = int(cmd[i+1]), int(cmd[i+2]), int(cmd[i+3])
-
-        if code == 3:
-            v1 = int(cmd[i+1])
-        
-        if code == 4:
-            v1 = int(cmd[i+1])
-
-
-        if code == 5:
-            v1, v2 = int(cmd[i+1]), int(cmd[i+2])
             
-        if code == 6:
-            v1, v2 = int(cmd[i+1]), int(cmd[i+2])
-
-        if code == 7:
-            v1, v2, v3 = int(cmd[i+1]), int(cmd[i+2]), int(cmd[i+3])
-
-
-        if code == 8:
-            v1, v2, v3 = int(cmd[i+1]), int(cmd[i+2]), int(cmd[i+3])
-
-            
-
-        if code == 1:
-            a = v1
-            if p1 == 0:
-                a = cmd[v1]
-            b = v2
-            if p2 == 0:
-                b = cmd[v2]
-            
-            pos = v3
-            
+            pp('add vals', p[0], v[0], p[1], v[1], p[2], v[2])
             cmd[pos] = a + b
             i += 4
-            #print('add', i, cmd, a+b)
+            pp('add', a, b, pos)
+            
+        #MUL
         elif code == 2:
-            a = v1
-            if p1 == 0:
-                a = cmd[v1]
-            b = v2
-            if p2 == 0:
-                b = cmd[v2]
-            pos = v3
+
+            pp('mul vals', p[0], v[0], p[1], v[1])
             cmd[pos] = a * b
-
-            #print('mul', i, cmd, a*b)
             i += 4
+
+            pp('mul', a, b, pos)
+        #INPUT
         elif code == 3:
-            a = 1
-            pos = v1
-
-            cmd[pos] = myin
-
-            #print('ins', i, cmd, pos)
+            
+            #DIFFERENT POS!
+            pos = v[0]
+            cmd[pos] = ins.get()
+            
+            pp('ins', pos)
+                
             i += 2
 
-
+        #OUTPUT
         elif code == 4:
-            a = v1
-            if p1 == 0:
-                a = cmd[v1]
-            
-            #print('output ', cmd, a, len(cmd))
-            output = a
+
+            output.append(a)
             i += 2
 
-            print('out', output)
-
+            pp('out', output)
+        
+        #JUMP IF NOT ZERO
         elif code == 5:
-            a = v1
-            if p1 == 0:
-                a = cmd[v1]
-            b = v2
-            if p2 == 0:
-                b = cmd[v2]
-            
             if a != 0:
                 i = b
-
-                #print('jum not ', i, cmd, b)
             else:
-
-                #print('skip jump n z ', i, cmd, b)
                 i += 3
             
-
-        elif code == 6:
-            a = v1
-            if p1 == 0:
-                a = cmd[v1]
-            b = v2
-            #print('jump eq ', v2, cmd[v2])
-            if p2 == 0:
-                b = cmd[v2]
+            pp('jmp', a, b)
             
+        #JUMP IF ZERO
+        elif code == 6:
             if a == 0:
                 i = b
 
-                #print('jum eq ', i, cmd, b, len(cmd))
             else:
 
-                #print('skip jump z', i, cmd, b)
                 i += 3
-            
+        #LESS     
         elif code == 7:
-            a = v1
-            if p1 == 0:
-                a = cmd[v1]
-            b = v2
-            if p2 == 0:
-                b = cmd[v2]
-            
-            pos = v3
-
             if a < b:
                 cmd[pos] = 1
             else:
                 cmd[pos] = 0
             i += 4
 
-            #print('less ', i, cmd, a < b)
-        
-        elif code == 8:
-            a = v1
-            if p1 == 0:
-                a = cmd[v1]
-            b = v2
-            if p2 == 0:
-                b = cmd[v2]
-            
-            pos = v3
+            pp('less', a, b)
 
+        #EQ
+        elif code == 8:
             if a == b:
                 cmd[pos] = 1
             else:
                 cmd[pos] = 0
             
-            #print('eq ', cmd, v3, cmd[v3], a == b)
             i += 4
-
-
+            pp('eq', a, b)
+       
+        #DONE!
         elif code == 99:
             return output
 
@@ -341,12 +122,36 @@ def p2(v, log=False):
         
     return output
 
+def get_cmd(v):
+    lines = v.strip().split('\n')
+    cmd = defaultdict(int)
+    i = 0
+    for line in lines:
+        no = line.strip().split(',')
+        for n in no:
+
+            if len(n) > 0:
+                cmd[i] = int(n)
+                i += 1
+
+    return cmd
+
+
+def p2(v, log=False):
+    cmd= get_cmd(v)
+    ins = Queue()
+    ins.put(5)
+    return program(cmd, ins)
+
 def get_day():
-    return date.today().day
+    return 5
 
 def get_year():
-    return date.today().year
+    return 2019
 
 if __name__ == '__main__':
-    run(get_year(), get_day(), p1, p2, run_samples = False)
-    #run(get_year(), get_day(), p1, p2, samples_only = True)
+    #0 samples_only, 1 run everything, 2 only my input data
+    DB = 2
+    #Debugprint: print if 1, not if 0
+    PP = 0
+    run(get_year(), get_day(), p1, p2, run_samples = DB < 2, samples_only = DB == 0)
