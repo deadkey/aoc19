@@ -27,7 +27,7 @@ def get_year():
 
 if __name__ == '__main__':
     #0 samples_only, 1 run everything, 2 only my input data
-    DB = 0
+    DB = 1
     #Debugprint: print if 1, not if 0
     PP = 0
     run(get_year(), get_day(), p1, p2, run_samples = DB < 2, samples_only = DB == 0)
