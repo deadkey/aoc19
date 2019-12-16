@@ -3,7 +3,9 @@ from datetime import date
 sys.path.extend(['..', '.'])
 from collections import *
 from main import run
+
 from queue import Queue
+from collections import defaultdict as dd
 
 def get_cmd(v):
     lines = v.strip().split('\n')
@@ -32,11 +34,14 @@ def get(i, p, v, cmd):
     return v[i]
 
 
-def program(cmd, ins):
+def program3(cmd, ins, i):
     global offset
     output = []
-
-    i = 0
+    blocks = 0
+    score = 0
+    joy = 0, 0
+    ball = 0, 0
+    
     while True:
         opcode = str(cmd[i])[::-1] + '0' * 6
         code = int(opcode[:2][::-1]) # note reversed!
@@ -53,15 +58,19 @@ def program(cmd, ins):
         #ADD
         if code == 1:
             
+            pp('add vals', p[0], v[0], p[1], v[1], p[2], v[2])
             cmd[pos] = a + b
             i += 4
+            pp('add', a, b, pos)
             
         #MUL
         elif code == 2:
 
+            pp('mul vals', p[0], v[0], p[1], v[1])
             cmd[pos] = a * b
             i += 4
 
+            pp('mul', a, b, pos)
         #INPUT
         elif code == 3:
             
@@ -69,8 +78,11 @@ def program(cmd, ins):
             pos = v[0]
             if p[0] == 2:
                 pos = v[0] + offset
-            cmd[pos] = ins.get()
+            ddd = moveto(ball, joy)
+            print('Moving', ball, joy, ddd)
+            cmd[pos] = ddd
             
+            pp('ins', pos)
                 
             i += 2
 
@@ -80,6 +92,22 @@ def program(cmd, ins):
             output.append(a)
             i += 2
 
+            if len(output) == 3:
+                x = output[0]
+                y = output[1]
+                t = output[2]
+                output = []
+                if (x, y) == (-1, 0):
+                    score = t
+                elif t == 3:
+                    joy = x, y
+                elif t == 4:
+                    ball = x,y
+                elif t == 2:
+                    blocks += 1
+                pp(x, y, t)
+            
+
         
         #JUMP IF NOT ZERO
         elif code == 5:
@@ -88,6 +116,7 @@ def program(cmd, ins):
             else:
                 i += 3
             
+            pp('jmp', a, b)
             
         #JUMP IF ZERO
         elif code == 6:
@@ -105,6 +134,7 @@ def program(cmd, ins):
                 cmd[pos] = 0
             i += 4
 
+            pp('less', a, b)
 
         #EQ
         elif code == 8:
@@ -114,40 +144,70 @@ def program(cmd, ins):
                 cmd[pos] = 0
             
             i += 4
+            pp('eq', a, b)
         #Changing offset
         elif code == 9:
             offset += a
+            pp('offset', offset)
             i += 2
 
         #DONE!
         elif code == 99:
-            return output
+             return blocks, score
 
         else:
             print('something went wrong', i)
             exit()
 
-        
-    return output
 
+    return [], [], 0, True
 
-
+offset =0
 
 def p1(v, log=False):
     global offset
     offset = 0
+    return 0
     cmd= get_cmd(v)
     ins = Queue()
-    ins.put(1)
-    return program(cmd, ins)
+    i = 0
+    blocks, score = program3(cmd, ins, i)
+       
+    return blocks
+    
+def printpanel():
+    global  mnX, mnY, mxX, mxY
+    types = ['.', 'X', '#', '_', 'o']
+    for c in range(mnY, mxY + 1):
+        out = []
+        for r in range(mnX, mxX + 1):
+            t = panels[r, c]
+            out.append(types[t])
+        print(''.join(out))
+    print()
+
+def moveto(ball, joy):
+    dx = ball[0] -joy[0]
+    #print('diff x', dx)
+    if dx > 0:
+        return 1
+    if dx < 0:
+        return -1
+    return 0
+
+def close(ball, joy):
+    return joy[1] - ball[1] == 1 
 
 def p2(v, log=False):
-    global offset
+
     offset = 0
     cmd= get_cmd(v)
+    cmd[0] = 2
     ins = Queue()
-    ins.put(2)
-    return program(cmd, ins)
+    i = 0
+    blocks, score = program3(cmd, ins, i)
+       
+    return score
 
 def pp(*v):
     if PP:
@@ -163,7 +223,7 @@ def get_year():
 
 if __name__ == '__main__':
     #0 samples_only, 1 run everything, 2 only my input data
-    DB = 2
+    DB = 1
     #Debugprint: print if 1, not if 0
     PP = 0
     run(get_year(), get_day(), p1, p2, run_samples = DB < 2, samples_only = DB == 0)
