@@ -73,7 +73,7 @@ s = ','.join(map(str, inst))
 A = 'R,12,L,8,L,4,L,4'
 B = 'L,8,R,6,L,6'
 C = 'L,8,L,4,R,12,L,6,L,4'
-prog = [A, B, A, B, C, A, C, A, C, B]
+prog = [A,B,A,B,C,A,C,A,C,B]
 s2 = ','.join(prog)
 print(s)
 print(s2)
