@@ -84,8 +84,13 @@ def findAll(grid, ch):
     for r in range(len(grid)):
         for c in range(len(grid[0])):
             if grid[r][c] == ch:
-                start.append((r, c))
-                grid[r][c] = '.'
+                start = [(r-1, c-1), (r-1, c+1), (r+1, c-1), (r+1, c+1)]
+                grid[r][c] = '#'
+                grid[r][c+1] = '#'
+                grid[r][c-1] = '#'
+                grid[r-1][c] = '#'
+                grid[r+1][c] = '#'
+
             if ord('a') <= ord(grid[r][c]) <= ord('z'):
                 keys.append(grid[r][c])
     return start, keys
@@ -134,7 +139,6 @@ def solveAll(fromPos, grid, lettersLeft, DP):
     return DP[tuple(fromPos), lettersLeft]
 
 def p1(v, log=False):
-    
     lines = v.strip().split('\n')
     grid = []
     for line in lines:
