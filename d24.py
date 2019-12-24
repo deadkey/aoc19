@@ -20,6 +20,9 @@ def pp(*v):
     if PP:
         print(v) 
 
+
+
+
 if __name__ == '__main__':
     #0 samples_only, 1 run everything, 2 only my input data
     DB = 1
